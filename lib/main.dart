@@ -11,7 +11,7 @@ class TaskFlowApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TaskFlow',
+      title: 'ONICHAN-TAISKY',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
@@ -27,12 +27,12 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const studentName = 'Frank Anthony';
-    const pendingTasks = 3;
-    const courseName = 'Desarrollo de aplicaciones móviles UwUr';
+    const pendingTasks = 99;
+    const courseName = 'Desarrollo e implementacion de cambios en nombre y numero de sus respectivas variables';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TaskFlow'),
+        title: const Text('ONICHAN-TAISY'),
         centerTitle: true,
       ),
       body: Padding(
@@ -56,7 +56,7 @@ class WelcomeScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.pending_actions),
                     const SizedBox(width: 12),
-                    Text('Tareas pendientes: $pendingTasks'),
+                    Text('Tareas Pendientes: $pendingTasks'),
                   ],
                 ),
               ),
