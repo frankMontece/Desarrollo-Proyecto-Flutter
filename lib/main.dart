@@ -16,10 +16,34 @@ class TaskFlowApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const WelcomeScreen(),
+      home: const TaskListScreen(), // Cambiaremos esto en el Paso C
     );
   }
 }
+
+class Task {
+  const Task({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.priority,
+    required this.isCompleted,
+  });
+
+  final int id;
+  final String title;
+  final String description;
+  final String priority;
+  final bool isCompleted;
+}
+
+const demoTasks = [
+  Task(id: 1, title: 'Cstsdor de H especializado', description: 'Revisar ListView.builder', priority: 'Alta', isCompleted: false),
+  Task(id: 2, title: 'Diseñar la pantalla', description: 'Definir la tarjeta de tarea', priority: 'Media', isCompleted: false),
+  Task(id: 3, title: 'Preparar evidencia', description: 'Tomar captura del avance', priority: 'Baja', isCompleted: true),
+  Task(id: 4, title: 'Organizar el backlog', description: 'Priorizar pendientes', priority: 'Alta', isCompleted: false),
+  Task(id: 5, title: 'Revisar código', description: 'Ejecutar flutter analyze', priority: 'Media', isCompleted: false),
+];
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -109,3 +133,42 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 }
+class TaskCard extends StatelessWidget {
+  const TaskCard({super.key, required this.task});
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          task.isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: task.isCompleted ? Colors.green : null,
+        ),
+        title: Text(task.title),
+        subtitle: Text('${task.priority} · ${task.description}'),
+        trailing: const Icon(Icons.chevron_right),
+      ),
+    );
+  }
+}
+class TaskListScreen extends StatelessWidget {
+  const TaskListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mis tareas')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: demoTasks.length,
+        itemBuilder: (context, index) {
+          final task = demoTasks[index];
+          return TaskCard(task: task);
+        },
+      ),
+    );
+  }
+}
+
