@@ -1,74 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'task.dart';
 
 void main() {
   runApp(const TaskFlowApp());
 }
 
 // 1. DATOS Y MODELOS
-class Task {
-  const Task({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.priority,
-    required this.isCompleted,
-  });
-
-  final int id;
-  final String title;
-  final String description;
-  final String priority;
-  final bool isCompleted;
-}
-
-const demoTasks = [
-  Task(
-    id: 1,
-    title: 'Cstsdor de H especializado',
-    description: 'Revisar ListView.builder',
-    priority: 'Alta',
-    isCompleted: false,
-  ),
-  Task(
-    id: 2,
-    title: 'Diseñar la pantalla',
-    description: 'Definir la tarjeta de tarea',
-    priority: 'Media',
-    isCompleted: false,
-  ),
-  Task(
-    id: 3,
-    title: 'Preparar evidencia',
-    description: 'Tomar captura del avance',
-    priority: 'Baja',
-    isCompleted: true,
-  ),
-  Task(
-    id: 4,
-    title: 'Organizar el backlog',
-    description: 'Priorizar pendientes',
-    priority: 'Alta',
-    isCompleted: false,
-  ),
-  Task(
-    id: 5,
-    title: 'Revisar código',
-    description: 'Ejecutar flutter analyze',
-    priority: 'Media',
-    isCompleted: false,
-  ),
+// Actualizamos los datos para incluir el userId: 1
+const demoTasks = <Task>[
+  Task(id: 1, title: 'Terminar informe de Inteligencia de Negocios', description: 'Redactar conclusiones y revisar el reporte de Power BI', priority: 'Alta', isCompleted: false, userId: 1),
+  Task(id: 2, title: 'Estudiar para la evaluación de App Web II', description: 'Repasar rutas, controladores y pruebas de la API en Go', priority: 'Alta', isCompleted: false, userId: 1),
+  Task(id: 3, title: 'Subir avance de TaskFlow', description: 'Hacer commit y push con el README y el modelo Task', priority: 'Media', isCompleted: true, userId: 1),
+  Task(id: 4, title: 'Preparar exposición de Móviles', description: 'Organizar diapositivas y practicar la demostración', priority: 'Media', isCompleted: false, userId: 1),
+  Task(id: 5, title: 'Ordenar apuntes de la semana', description: 'Clasificar notas por materia y fecha de entrega', priority: 'Baja', isCompleted: false, userId: 1),
 ];
 
 // 2. CONFIGURACIÓN DE RUTAS
+Task? findTask(int? id) {
+  for (final task in demoTasks) {
+    if (task.id == id) return task;
+  }
+  return null; // Devuelve nulo si no lo encuentra en vez de explotar
+}
+
 final appRouter = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const TaskListScreen()),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const TaskListScreen(),
+    ),
     GoRoute(
       path: '/task/:id',
       builder: (context, state) {
-        final taskId = int.parse(state.pathParameters['id']!);
-        return TaskDetailScreen(taskId: taskId);
+        // Usamos tryParse para evitar errores si no es un número
+        final id = int.tryParse(state.pathParameters['id'] ?? '');
+        // Pasamos el objeto Task entero, en lugar de solo el ID
+        return TaskDetailScreen(task: findTask(id)); 
       },
     ),
   ],
@@ -138,14 +106,24 @@ class TaskCard extends StatelessWidget {
   }
 }
 
+// 5. PANTALLA DE DETALLE DE TAREA
 class TaskDetailScreen extends StatelessWidget {
-  const TaskDetailScreen({super.key, required this.taskId});
+  const TaskDetailScreen({super.key, required this.task});
 
-  final int taskId;
+  final Task? task; // Ahora recibe la tarea (que puede ser nula)
 
   @override
   Widget build(BuildContext context) {
-    final task = demoTasks.firstWhere((item) => item.id == taskId);
+    // Verificamos si la tarea existe
+    if (task == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: const Center(child: Text('No se encontró esta tarea.')),
+      );
+    }
+
+    // Si existe, desempaquetamos de forma segura
+    final selected = task!;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Detalle de tarea')),
@@ -154,16 +132,18 @@ class TaskDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(task.title, style: Theme.of(context).textTheme.headlineSmall),
+            Text(selected.title, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 16),
-            Text(task.description),
+            Text(selected.description),
             const SizedBox(height: 16),
-            Chip(label: Text('Prioridad: ${task.priority}')),
+            Chip(label: Text('Prioridad: ${selected.priority}')),
             const SizedBox(height: 12),
-            Text(task.isCompleted ? 'Estado: completada' : 'Estado: pendiente'),
+            Text(selected.isCompleted ? 'Estado: completada' : 'Estado: pendiente'),
+            const SizedBox(height: 12),
+            Text('Usuario: ${selected.userId}'), // <- Mostramos el nuevo campo
             const Spacer(),
             FilledButton.tonalIcon(
-              onPressed: () => context.pop(),
+              onPressed: () => context.pop(), 
               icon: const Icon(Icons.arrow_back),
               label: const Text('Volver al listado'),
             ),
