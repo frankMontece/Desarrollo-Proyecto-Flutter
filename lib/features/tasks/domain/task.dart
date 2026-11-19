@@ -5,7 +5,7 @@ class Task {
     required this.description,
     required this.priority,
     required this.isCompleted,
-    required this.userId, // <- Nuevo campo
+    required this.userId,
   });
 
   final int id;
@@ -13,7 +13,18 @@ class Task {
   final String description;
   final String priority;
   final bool isCompleted;
-  final int userId; // <- Nuevo campo
+  final int userId;
+
+  Task copyWith({bool? isCompleted}) {
+    return Task(
+      id: id,
+      title: title,
+      description: description,
+      priority: priority,
+      isCompleted: isCompleted ?? this.isCompleted,
+      userId: userId,
+    );
+  }
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
