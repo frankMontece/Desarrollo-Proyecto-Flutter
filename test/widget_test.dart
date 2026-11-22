@@ -10,7 +10,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       ChangeNotifierProvider(
-        create: (_) => TasksViewModel(LocalTaskRepository()),
+        create: (_) => TasksViewModel(LocalTaskRepository())..loadTasks(),
         child: const TaskFlowApp(),
       ),
     );

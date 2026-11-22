@@ -45,3 +45,11 @@ POST /tasks       crear tarea
 PATCH /tasks/:id  actualizar tarea
 DELETE /tasks/:id eliminar tarea
 
+## API de tareas
+
+- **Endpoint base:** `https://jsonplaceholder.typicode.com/todos`
+- **Filtro aplicado:** Parámetro `userId=2` (obtiene únicamente las tareas del usuario seleccionado).
+- **Campos recibidos de la API:** `id`, `userId`, `title` y `completed` (mapeado a `isCompleted`).
+- **Valores completados por defecto en TaskFlow:** `description` ("Sin descripción (API)") y `priority` ("Sin prioridad (API)").
+- **Persistencia:** La acción de marcar/desmarcar una tarea como completada actualiza únicamente la memoria local temporalmente; al reiniciar la app se vuelven a consultar los datos originales del servidor.
+
