@@ -53,3 +53,9 @@ DELETE /tasks/:id eliminar tarea
 - **Valores completados por defecto en TaskFlow:** `description` ("Sin descripción (API)") y `priority` ("Sin prioridad (API)").
 - **Persistencia:** La acción de marcar/desmarcar una tarea como completada actualiza únicamente la memoria local temporalmente; al reiniciar la app se vuelven a consultar los datos originales del servidor.
 
+## Formulario de creación (Sesión 9)
+
+- **Ruta declarativa:** `/new` renderiza `TaskFormScreen`.
+- **Validaciones:** El campo título es obligatorio y exige un mínimo de 3 caracteres mediante `GlobalKey<FormState>` y `TextFormField.validator`.
+- **Campos adicionales:** Descripción multilínea, selector de prioridad (`Alta`, `Media`, `Baja`) y selector de fecha límite opcional mediante `showDatePicker`.
+- **Retorno de datos:** Al validar correctamente, `context.pop(draft)` devuelve una instancia de `TaskDraft` a `TaskListScreen`, mostrándose en un `SnackBar` previo a la integración `POST` de la siguiente sesión.
