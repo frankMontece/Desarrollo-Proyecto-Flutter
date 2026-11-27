@@ -26,20 +26,28 @@ class TaskListScreen extends StatelessWidget {
         ],
       ),
       body: _buildBody(context, viewModel),
+
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final draft = await context.push<TaskDraft>('/new');
           if (!context.mounted || draft == null) return;
-          final dateInfo = draft.dueDate != null
-              ? ' · Fecha: ${draft.dueDate!.day}/${draft.dueDate!.month}/${draft.dueDate!.year}'
-              : '';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Formulario válido: ${draft.title} (${draft.priority})$dateInfo',
-              ),
-            ),
-          );
+          try {
+            await context.read<TasksViewModel>().createTask(
+              draft.title,
+              draft.description,
+              draft.priority,
+            );
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Tarea creada')));
+            }
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No se pudo crear la tarea')),
+              );
+            }
+          }
         },
         icon: const Icon(Icons.add),
         label: const Text('Nueva tarea'),

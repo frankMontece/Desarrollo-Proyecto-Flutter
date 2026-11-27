@@ -46,6 +46,109 @@ class TaskDetailScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    final controller = TextEditingController(text: task.title);
+                    final newTitle = await showDialog<String>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text('Editar título'),
+                        content: TextField(
+                          controller: controller,
+                          decoration: const InputDecoration(
+                            labelText: 'Título',
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dialogContext),
+                            child: const Text('Cancelar'),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(
+                              dialogContext,
+                              controller.text.trim(),
+                            ),
+                            child: const Text('Guardar'),
+                          ),
+                        ],
+                      ),
+                    );
+                    controller.dispose();
+                    if (!context.mounted ||
+                        newTitle == null ||
+                        newTitle.length < 3) {
+                      return;
+                    }
+                    try {
+                      await context.read<TasksViewModel>().updateTask(
+                        task.copyWith(title: newTitle),
+                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Tarea actualizada')),
+                        );
+                      }
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No se pudo actualizar'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.edit),
+                  label: const Text('Editar título'),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  onPressed: () async {
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text('Eliminar tarea'),
+                        content: Text('¿Eliminar "${task.title}"?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(dialogContext, false),
+                            child: const Text('Cancelar'),
+                          ),
+                          FilledButton(
+                            onPressed: () => Navigator.pop(dialogContext, true),
+                            child: const Text('Eliminar'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed != true || !context.mounted) return;
+                    try {
+                      await context.read<TasksViewModel>().deleteTask(task.id);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Tarea eliminada')),
+                        );
+                        context.pop();
+                      }
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No se pudo eliminar la tarea'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Eliminar tarea'),
+                ),
+                const SizedBox(height: 12),
                 FilledButton.tonalIcon(
                   onPressed: () => context.pop(),
                   icon: const Icon(Icons.arrow_back),
