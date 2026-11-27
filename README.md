@@ -59,3 +59,9 @@ DELETE /tasks/:id eliminar tarea
 - **Validaciones:** El campo título es obligatorio y exige un mínimo de 3 caracteres mediante `GlobalKey<FormState>` y `TextFormField.validator`.
 - **Campos adicionales:** Descripción multilínea, selector de prioridad (`Alta`, `Media`, `Baja`) y selector de fecha límite opcional mediante `showDatePicker`.
 - **Retorno de datos:** Al validar correctamente, `context.pop(draft)` devuelve una instancia de `TaskDraft` a `TaskListScreen`, mostrándose en un `SnackBar` previo a la integración `POST` de la siguiente sesión.
+## Operaciones CRUD en TaskFlow (Sesión 10)
+
+- **Crear (`POST /todos`):** Envía el título y el `userId` desde `TaskFormScreen` y añade la tarea confirmada al estado reactivo de la lista.
+- **Actualizar (`PATCH /todos/:id`):** Permite modificar el título desde `TaskDetailScreen` mediante un diálogo controlado y sincroniza la vista.
+- **Eliminar (`DELETE /todos/:id`):** Solicita confirmación mediante `AlertDialog` antes de ejecutar la petición y remover el elemento del listado.
+- **Nota sobre persistencia:** JSONPlaceholder simula las operaciones de escritura (`HTTP 200 / 201`), pero no almacena los cambios de forma permanente en su servidor; al recargar la consulta `GET`, se recuperan los registros originales.
